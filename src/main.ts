@@ -1,9 +1,11 @@
 import { createElement } from "./vdom/createElement";
+import { render } from "./vdom/render";
 
-console.log("hello world!");
 const vApp = createElement("div", {
   attrs: { id: "app" },
-  children: ["hello world"],
+  children: [],
 });
 
-console.log(vApp);
+const $app = render(vApp);
+
+console.log($app);
