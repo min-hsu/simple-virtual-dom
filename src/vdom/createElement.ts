@@ -1,10 +1,6 @@
 export function createElement(
   tagName: string,
-  { attrs, children }: TCreateElementOption
+  { attrs = {}, children = [] }: TCreateElementOption = {}
 ): IVdom {
-  return {
-    tagName,
-    attrs,
-    children,
-  };
+  return { tagName, attrs, children };
 }
