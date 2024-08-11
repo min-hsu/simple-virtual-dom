@@ -1,4 +1,4 @@
-export function render({ tagName, attrs = {}, children = [] }: Vdom) {
+export function renderElement({ tagName, attrs = {}, children = [] }: Vdom) {
   const $el = document.createElement(tagName);
 
   // set attributes
@@ -13,4 +13,15 @@ export function render({ tagName, attrs = {}, children = [] }: Vdom) {
   }
 
   return $el;
+}
+
+export function render(vNode: Children) {
+  if (typeof vNode === "string") {
+    return document.createTextNode(vNode);
+  }
+  return renderElement({
+    tagName: vNode.tagName,
+    attrs: vNode.attrs,
+    children: vNode.children,
+  });
 }

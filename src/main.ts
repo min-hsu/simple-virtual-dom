@@ -15,7 +15,9 @@ const createVApp = ({ count }: Props) =>
     ],
   });
 
-const $app = render(createVApp({ count: 1 }));
+let count = 0;
+const vApp = createVApp({ count });
+const $app = render(vApp);
 mount($app, document.querySelector("#app")!);
 
 console.log($app);
