@@ -1,9 +1,11 @@
-declare type TChildren = IVdom;
+declare type Children = IVdom | string;
 
-declare interface IVdom {
+declare interface Vdom {
   tagName: string;
   attrs?: Record<string, any>;
-  children?: Array<TChildren>;
+  children?: Array<Children>;
 }
 
-declare type TCreateElementOption = Pick<IVdom, "attrs" | "children">;
+declare type CreateElementOption = Pick<Vdom, "attrs" | "children">;
+
+declare type Props = Record<string, any>;
