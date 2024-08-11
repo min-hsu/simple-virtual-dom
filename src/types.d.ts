@@ -2,8 +2,8 @@ declare type Children = IVdom | string;
 
 declare interface Vdom {
   tagName: string;
-  attrs?: Record<string, any>;
-  children?: Array<Children>;
+  attrs: Props;
+  children: Array<Children>;
 }
 
 declare type CreateElementOption = Pick<Vdom, "attrs" | "children">;
