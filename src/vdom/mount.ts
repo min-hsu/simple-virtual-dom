@@ -1,4 +1,4 @@
-export function mount($node: Element | Text, $target: Element | Text) {
+export function mount($node: TNode, $target: TNode) {
   $target.replaceWith($node);
   return $node;
 }
