@@ -7,6 +7,7 @@ const createVApp = ({ count }: Props) =>
     attrs: { id: "app", dataCount: count },
     children: [
       String(count),
+      createElement("input"),
       createElement("img", {
         attrs: {
           src: "https://media.giphy.com/media/JgWZYoIgjzsIQO8joZ/giphy.gif",
@@ -16,8 +17,12 @@ const createVApp = ({ count }: Props) =>
   });
 
 let count = 0;
-const vApp = createVApp({ count });
-const $app = render(vApp);
-mount($app, document.querySelector("#app")!);
 
-console.log($app);
+const $app = render(createVApp({ count }));
+let $rootElement = mount($app, document.querySelector("#app")!);
+
+setInterval(() => {
+  count++;
+  const $app = render(createVApp({ count }));
+  $rootElement = mount($app, $rootElement);
+}, 1000);
