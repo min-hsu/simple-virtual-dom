@@ -1,8 +1,29 @@
 import { render } from "./render";
 
 function diffAttrs(oldAttrs: Props, newAttrs: Props) {
-  return ($node: TNode): TNode => {
-    return $node;
+  const patches: Array<($node: HTMLElement) => void> = [];
+  // set new attributes
+  for (const [k, v] of Object.entries(newAttrs)) {
+    patches.push(($node: HTMLElement) => {
+      $node.setAttribute(k, v);
+      return $node;
+    });
+  }
+
+  // remove old attributes
+  for (const k in oldAttrs) {
+    if (!(k in newAttrs)) {
+      patches.push(($node: HTMLElement) => {
+        $node.removeAttribute(k);
+        return $node;
+      });
+    }
+  }
+
+  return ($node: TNode) => {
+    patches.forEach((patch) => {
+      patch($node as HTMLElement);
+    });
   };
 }
 
@@ -14,7 +35,7 @@ function diffChildren(oldChildren: Children, newChildren: Children) {
 
 export function diff(vOldNode: Vdom, vNewNode: Vdom) {
   if (vNewNode === undefined) {
-    return ($node: TNode): TNode => {
+    return ($node: TNode): TNode | undefined => {
       $node.remove();
       return undefined;
     };
@@ -39,12 +60,12 @@ export function diff(vOldNode: Vdom, vNewNode: Vdom) {
     };
   }
 
-  const patchAttrs = diffAttrs(vOldNode.attrs, vNewNode.attrs);
-  const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
+  const patchAttrs = diffAttrs(vOldNode.attrs!, vNewNode.attrs!);
+  // const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
 
   return ($node: TNode): TNode => {
     patchAttrs($node);
-    patchChildren($node);
+    // patchChildren($node);
 
     return $node;
   };

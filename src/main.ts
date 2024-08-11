@@ -20,7 +20,7 @@ const createVApp = ({ count }: Props) =>
 let count = 0;
 let vApp = createVApp({ count });
 const $app = render(vApp);
-let $rootElement = mount($app, document.querySelector("#app")!);
+let $rootElement = mount($app, document.querySelector("#app") as HTMLElement);
 
 setInterval(() => {
   count++;
