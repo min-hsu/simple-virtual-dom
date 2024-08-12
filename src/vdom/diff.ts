@@ -1,5 +1,16 @@
 import { render } from "./render";
 
+function zip<T, U>(
+  xs: Array<T>,
+  ys: U extends Node ? NodeListOf<U> : Array<U>
+): Array<[T, U]> {
+  const zipped: Array<[T, U]> = [];
+  for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+    zipped.push([xs[i], ys[i]]);
+  }
+  return zipped;
+}
+
 function diffAttrs(oldAttrs: Props, newAttrs: Props) {
   const patches: Array<($node: HTMLElement) => void> = [];
   // set new attributes
@@ -27,9 +38,36 @@ function diffAttrs(oldAttrs: Props, newAttrs: Props) {
   };
 }
 
-function diffChildren(oldChildren: Children, newChildren: Children) {
-  return ($node: TNode): TNode => {
-    return $node;
+function diffChildren(
+  oldChildren: Array<Children>,
+  newChildren: Array<Children>
+) {
+  const childrenPatches: Array<($node: HTMLElement) => void> = [];
+  zip<Children, Children>(oldChildren, newChildren).forEach(
+    ([oldChild, newChild]) => {
+      childrenPatches.push(diff(oldChild, newChild));
+    }
+  );
+
+  const additionalPatches: Array<($node: TNode) => void> = [];
+  newChildren.slice(oldChildren.length).forEach((child) => {
+    additionalPatches.push(($node: TNode) => {
+      $node.appendChild(render(child));
+      return $node;
+    });
+  });
+
+  return ($parent: TNode): TNode => {
+    zip<($node: HTMLElement) => void, ChildNode>(
+      childrenPatches,
+      $parent.childNodes
+    ).forEach(([patch, child]) => {
+      if (child instanceof HTMLElement) {
+        patch(child);
+      }
+    });
+
+    return $parent;
   };
 }
 
@@ -61,11 +99,11 @@ export function diff(vOldNode: Vdom, vNewNode: Vdom) {
   }
 
   const patchAttrs = diffAttrs(vOldNode.attrs!, vNewNode.attrs!);
-  // const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
+  const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
 
   return ($node: TNode): TNode => {
     patchAttrs($node);
-    // patchChildren($node);
+    patchChildren($node);
 
     return $node;
   };
