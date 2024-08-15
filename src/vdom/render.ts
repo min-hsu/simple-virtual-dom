@@ -1,4 +1,4 @@
-export function renderElement({ tagName, attrs = {}, children = [] }: Vdom) {
+export function renderElement({ tagName, attrs = {}, children = [] }: IVdom) {
   const $el = document.createElement(tagName);
 
   // set attributes
@@ -15,7 +15,7 @@ export function renderElement({ tagName, attrs = {}, children = [] }: Vdom) {
   return $el;
 }
 
-export function render(vNode: Children) {
+export function render(vNode: IChildren) {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }

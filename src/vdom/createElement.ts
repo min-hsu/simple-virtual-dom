@@ -1,6 +1,6 @@
 export function createElement(
   tagName: string,
-  { attrs = {}, children = [] }: CreateElementOption = {}
-): Vdom {
+  { attrs = {}, children = [] }: ICreateElementOption = {}
+): IVdom {
   return { tagName, attrs, children };
 }

@@ -1,15 +1,15 @@
-declare type Children = IVdom | string;
+declare type IChildren = IVdom | string;
 
-declare interface Vdom {
+declare interface IVdom {
   tagName: string;
   attrs: Props;
-  children: Array<Children>;
+  children: Array<IChildren>;
 }
 
-declare type CreateElementOption = {
+declare interface ICreateElementOption {
   attrs?: Props;
-  children?: Array<Children>;
-};
+  children?: Array<IChildren>;
+}
 
 declare type Props = Record<string, any>;
 

@@ -1,7 +1,7 @@
 import { render } from "./render";
 
 function zip<T, U>(
-  xs: Array<T>,
+  xs: T extends Node ? NodeListOf<T> : Array<T>,
   ys: U extends Node ? NodeListOf<U> : Array<U>
 ): Array<[T, U]> {
   const zipped: Array<[T, U]> = [];
@@ -38,12 +38,9 @@ function diffAttrs(oldAttrs: Props, newAttrs: Props) {
   };
 }
 
-function diffChildren(
-  oldChildren: Array<Children>,
-  newChildren: Array<Children>
-) {
+function diffChildren(oldChildren: Array<IVdom>, newChildren: Array<IVdom>) {
   const childrenPatches: Array<($node: HTMLElement) => void> = [];
-  zip<Children, Children>(oldChildren, newChildren).forEach(
+  zip<IVdom, IVdom>(oldChildren, newChildren).forEach(
     ([oldChild, newChild]) => {
       childrenPatches.push(diff(oldChild, newChild));
     }
@@ -71,7 +68,7 @@ function diffChildren(
   };
 }
 
-export function diff(vOldNode: Vdom, vNewNode: Vdom) {
+export function diff(vOldNode: IVdom, vNewNode: IVdom) {
   if (vNewNode === undefined) {
     return ($node: TNode): TNode | undefined => {
       $node.remove();
@@ -99,7 +96,10 @@ export function diff(vOldNode: Vdom, vNewNode: Vdom) {
   }
 
   const patchAttrs = diffAttrs(vOldNode.attrs!, vNewNode.attrs!);
-  const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
+  const patchChildren = diffChildren(
+    vOldNode.children as Array<IVdom>,
+    vNewNode.children as Array<IVdom>
+  );
 
   return ($node: TNode): TNode => {
     patchAttrs($node);
