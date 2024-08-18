@@ -1,4 +1,4 @@
-export function renderElement({ tagName, attrs = {}, children = [] }: IVdom) {
+export function renderElement({ tagName, attrs, children }: IVdom) {
   const $el = document.createElement(tagName);
 
   // set attributes
