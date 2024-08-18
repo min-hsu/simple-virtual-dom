@@ -59,10 +59,10 @@ function diffChildren(oldChildren: Array<IVdom>, newChildren: Array<IVdom>) {
       childrenPatches,
       $parent.childNodes
     ).forEach(([patch, child]) => {
-      if (child instanceof HTMLElement) {
-        patch(child);
-      }
+      patch(child as HTMLElement);
     });
+
+    additionalPatches.forEach((patch) => patch($parent));
 
     return $parent;
   };
