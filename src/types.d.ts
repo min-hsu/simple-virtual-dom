@@ -1,10 +1,10 @@
-declare type Props = Record<string, any>;
+declare type IProps = Record<string, any>;
 
 declare type IChildren = IVdom | string;
 
 declare interface IVdom {
   readonly tagName: string;
-  readonly attrs: Props;
+  readonly attrs: IProps;
   readonly children: ReadonlyArray<IChildren>;
 }
 

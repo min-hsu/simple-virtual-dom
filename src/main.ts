@@ -5,7 +5,7 @@ import { diff } from "./vdom/diff";
 
 let count = 0;
 
-const createVApp = ({ count }: Props) =>
+const createVApp = ({ count }: IProps) =>
   createElement("div", {
     attrs: { id: "app", dataCount: count },
     children: [

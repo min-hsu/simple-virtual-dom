@@ -11,7 +11,7 @@ function zip<T, U>(
   return zipped;
 }
 
-function diffAttrs(oldAttrs: Props, newAttrs: Props) {
+function diffAttrs(oldAttrs: IProps, newAttrs: IProps) {
   const patches: Array<($node: HTMLElement) => void> = [];
   // set new attributes
   for (const [k, v] of Object.entries(newAttrs)) {
