@@ -1,9 +1,9 @@
-export function createElement(
+type CreateElement = (
   tagName: string,
-  {
-    attrs = {},
-    children = [],
-  }: Readonly<Partial<Pick<IVdom, "attrs" | "children">>> = {}
-): IVdom {
-  return { tagName, attrs, children };
-}
+  options?: { attrs?: VDom["attrs"]; children?: VDom["children"] }
+) => VDom;
+
+export const createElement: CreateElement = (
+  tagName,
+  { attrs = {}, children = [] } = {}
+) => ({ tagName, attrs, children });

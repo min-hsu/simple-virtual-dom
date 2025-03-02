@@ -11,25 +11,25 @@ function zip<T, U>(
   return zipped;
 }
 
-function diffAttrs(oldAttrs: IProps, newAttrs: IProps) {
+function diffAttrs(oldAttrs: Props, newAttrs: Props) {
   const patches: Array<($node: HTMLElement) => void> = [];
   // set new attributes
-  for (const [k, v] of Object.entries(newAttrs)) {
+  Object.entries(newAttrs).forEach(([k, v]) => {
     patches.push(($node: HTMLElement) => {
       $node.setAttribute(k, v);
       return $node;
     });
-  }
+  });
 
   // remove old attributes
-  for (const k in oldAttrs) {
-    if (!(k in newAttrs)) {
+  Object.keys(oldAttrs).forEach((key) => {
+    if (!(key in newAttrs)) {
       patches.push(($node: HTMLElement) => {
-        $node.removeAttribute(k);
+        $node.removeAttribute(key);
         return $node;
       });
     }
-  }
+  });
 
   return ($node: TNode) => {
     patches.forEach((patch) => {
@@ -38,13 +38,11 @@ function diffAttrs(oldAttrs: IProps, newAttrs: IProps) {
   };
 }
 
-function diffChildren(oldChildren: Array<IVdom>, newChildren: Array<IVdom>) {
+function diffChildren(oldChildren: Array<VDom>, newChildren: Array<VDom>) {
   const childrenPatches: Array<($node: HTMLElement) => void> = [];
-  zip<IVdom, IVdom>(oldChildren, newChildren).forEach(
-    ([oldChild, newChild]) => {
-      childrenPatches.push(diff(oldChild, newChild));
-    }
-  );
+  zip<VDom, VDom>(oldChildren, newChildren).forEach(([oldChild, newChild]) => {
+    childrenPatches.push(diff(oldChild, newChild));
+  });
 
   const additionalPatches: Array<($node: TNode) => void> = [];
   newChildren.slice(oldChildren.length).forEach((child) => {
@@ -55,6 +53,12 @@ function diffChildren(oldChildren: Array<IVdom>, newChildren: Array<IVdom>) {
   });
 
   return ($parent: TNode): TNode => {
+    if ($parent.childNodes.length > newChildren.length) {
+      [...$parent.childNodes]
+        .slice(newChildren.length)
+        .forEach(($node) => $node.remove());
+    }
+
     zip<($node: HTMLElement) => void, ChildNode>(
       childrenPatches,
       $parent.childNodes
@@ -68,9 +72,9 @@ function diffChildren(oldChildren: Array<IVdom>, newChildren: Array<IVdom>) {
   };
 }
 
-export function diff(vOldNode: IVdom, vNewNode: IVdom) {
+export function diff(vOldNode: VDom, vNewNode: VDom) {
   if (vNewNode === undefined) {
-    return ($node: TNode): TNode | undefined => {
+    return ($node: TNode): undefined => {
       $node.remove();
       return undefined;
     };
@@ -97,8 +101,8 @@ export function diff(vOldNode: IVdom, vNewNode: IVdom) {
 
   const patchAttrs = diffAttrs(vOldNode.attrs!, vNewNode.attrs!);
   const patchChildren = diffChildren(
-    vOldNode.children as Array<IVdom>,
-    vNewNode.children as Array<IVdom>
+    vOldNode.children as Array<VDom>,
+    vNewNode.children as Array<VDom>
   );
 
   return ($node: TNode): TNode => {

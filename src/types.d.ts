@@ -1,11 +1,11 @@
-declare type IProps = Record<string, any>;
+declare type Props = Record<string, any>;
 
-declare type IChildren = IVdom | string;
+declare type Children = VDom | string;
 
-declare interface IVdom {
+declare interface VDom {
   readonly tagName: string;
-  readonly attrs: IProps;
-  readonly children: ReadonlyArray<IChildren>;
+  readonly attrs: Props;
+  readonly children: ReadonlyArray<Children>;
 }
 
 declare type TNode = HTMLElement | Text;

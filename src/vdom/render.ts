@@ -1,21 +1,16 @@
-export function renderElement({ tagName, attrs, children }: IVdom) {
+export function renderElement({ tagName, attrs = {}, children = [] }: VDom) {
   const $el = document.createElement(tagName);
 
   // set attributes
-  for (const [k, v] of Object.entries(attrs)) {
-    $el.setAttribute(k, v);
-  }
+  Object.entries(attrs).forEach(([k, v]) => $el.setAttribute(k, v));
 
   // set children
-  for (const child of children) {
-    const $child = render(child);
-    $el.appendChild($child);
-  }
+  children.forEach((child) => $el.appendChild(render(child)));
 
   return $el;
 }
 
-export function render(vNode: IChildren) {
+export function render(vNode: Children) {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
