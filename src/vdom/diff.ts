@@ -89,7 +89,7 @@ export function diff(vOldNode: VDom, vNewNode: VDom) {
       };
     }
 
-    return () => undefined;
+    return ($node: TNode): TNode => $node;
   }
   if (vOldNode.tagName !== vNewNode.tagName) {
     return ($node: TNode): TNode => {
